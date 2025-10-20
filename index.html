@@ -59,7 +59,7 @@
             z-index: 1000;
         }
 
-        /* Avión */
+        /* Avión de papel */
         #avion {
             position: fixed;
             width: 80px;
@@ -69,17 +69,15 @@
             background-position: center;
             z-index: 999;
             opacity: 0;
-            transform: scale(2) translateX(-100%);
-            transition: none;
         }
 
-        /* Animación del avión */
-        .avion-entrando {
-            animation: entradaAvion 3s ease-in-out forwards;
+        /* Animación del avión de papel */
+        .avion-volando-ida {
+            animation: vueloIda 4s ease-in-out forwards;
         }
 
-        .avion-saliendo {
-            animation: salidaAvion 2s ease-in-out forwards;
+        .avion-volando-vuelta {
+            animation: vueloVuelta 5s ease-in-out forwards;
         }
 
         .avion-estacionado {
@@ -87,36 +85,77 @@
             left: 20px;
             opacity: 1;
             transform: scale(0.8) rotate(-15deg);
-            transition: all 0.5s ease;
         }
 
-        @keyframes entradaAvion {
+        @keyframes vueloIda {
             0% {
-                top: 50%;
+                top: 40%;
                 left: -100px;
                 opacity: 1;
-                transform: scale(2) translateX(0);
+                transform: scale(6) rotate(10deg);
             }
-            50% {
-                top: 25%; /* 3/4 arriba */
-                left: 75%; /* 3/4 derecha */
-                opacity: 1;
-                transform: scale(0.6) translateX(0);
+            20% {
+                top: 35%;
+                left: 20%;
+                transform: scale(4) rotate(5deg);
+            }
+            40% {
+                top: 45%;
+                left: 40%;
+                transform: scale(3) rotate(0deg);
+            }
+            60% {
+                top: 38%;
+                left: 60%;
+                transform: scale(2) rotate(-5deg);
+            }
+            80% {
+                top: 42%;
+                left: 80%;
+                transform: scale(1.5) rotate(-8deg);
             }
             100% {
-                top: 25%;
-                left: 75%;
+                top: 45%;
+                left: 120%;
                 opacity: 1;
-                transform: scale(0.6);
+                transform: scale(1) rotate(-10deg);
             }
         }
 
-        @keyframes salidaAvion {
+        @keyframes vueloVuelta {
             0% {
-                top: 25%;
-                left: 75%;
+                top: 45%;
+                left: 120%;
+                opacity: 0;
+                transform: scale(1) rotate(-10deg);
+            }
+            10% {
                 opacity: 1;
-                transform: scale(0.6);
+            }
+            20% {
+                top: 40%;
+                left: 90%;
+                transform: scale(1.2) rotate(15deg);
+            }
+            40% {
+                top: 35%;
+                left: 70%;
+                transform: scale(1.5) rotate(25deg);
+            }
+            50% {
+                top: 30%;
+                left: 50%;
+                transform: scale(1.8) rotate(30deg);
+            }
+            60% {
+                top: 35%;
+                left: 30%;
+                transform: scale(2) rotate(20deg);
+            }
+            80% {
+                top: 25%;
+                left: 15%;
+                transform: scale(1.5) rotate(10deg);
             }
             100% {
                 top: 20px;
@@ -161,7 +200,7 @@
     <!-- Criatura original -->
     <div id="criatura"></div>
 
-    <!-- Avión -->
+    <!-- Avión de papel -->
     <div id="avion"></div>
 
     <script>
@@ -188,28 +227,33 @@
             }, 500);
         }
 
-        // Animación del avión
+        // Animación del avión de papel
         function iniciarAnimacionAvion() {
             // Esperar 1 segundo antes de empezar
             setTimeout(() => {
-                // Fase 1: Entrada del avión (fotoavion1.png)
+                // Fase 1: Vuelo de ida (fotoavion1.png)
                 avion.style.backgroundImage = "url('criatura/fotoavion1.png')";
-                avion.classList.add('avion-entrando');
+                avion.classList.add('avion-volando-ida');
                 
-                // Fase 2: Después de completar la entrada, cambiar imagen y iniciar salida
+                // Fase 2: Después de completar la ida, pausa y luego vuelta
                 setTimeout(() => {
-                    avion.classList.remove('avion-entrando');
-                    // Cambiar a la segunda imagen del avión
-                    avion.style.backgroundImage = "url('criatura/fotoavion2.png')";
-                    avion.classList.add('avion-saliendo');
+                    avion.classList.remove('avion-volando-ida');
                     
-                    // Fase 3: Estacionar en posición final
+                    // Pequeña pausa para simular que da la vuelta
                     setTimeout(() => {
-                        avion.classList.remove('avion-saliendo');
-                        avion.classList.add('avion-estacionado');
-                    }, 2000); // Duración de la animación de salida
+                        // Cambiar a la segunda imagen del avión para el regreso
+                        avion.style.backgroundImage = "url('criatura/fotoavion2.png')";
+                        avion.classList.add('avion-volando-vuelta');
+                        
+                        // Fase 3: Estacionar en posición final
+                        setTimeout(() => {
+                            avion.classList.remove('avion-volando-vuelta');
+                            avion.classList.add('avion-estacionado');
+                        }, 5000); // Duración del vuelo de vuelta
+                        
+                    }, 1000); // Pausa entre vuelo de ida y vuelta
                     
-                }, 3000); // Duración de la animación de entrada
+                }, 4000); // Duración del vuelo de ida
                 
             }, 1000); // Espera inicial de 1 segundo
         }
