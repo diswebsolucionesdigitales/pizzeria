@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizzería La Italiana - Menú</title>
     <style>
-        /* SOLO tus estilos originales */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -81,8 +80,9 @@
         }
 
         .avion-estacionado {
-            top: 20px;
-            left: 20px;
+            /* 📍📍📍 POSICIÓN FINAL - AJUSTAR AQUÍ 📍📍📍 */
+            top: 30px;        /* 📏 Distancia desde arriba - aumentar = bajar */
+            left: 200px;      /* 📏 Distancia desde izquierda - aumentar = derecha */
             opacity: 1;
             transform: scale(0.8) rotate(-15deg);
         }
@@ -158,8 +158,8 @@
                 transform: scale(1.5) rotate(10deg);
             }
             100% {
-                top: 20px;
-                left: 20px;
+                top: 30px;
+                left: 200px;
                 opacity: 1;
                 transform: scale(0.8) rotate(-15deg);
             }
@@ -204,7 +204,7 @@
     <div id="avion"></div>
 
     <script>
-        // Configuración simple - solo las 5 fotos en secuencia
+        // Configuración de imágenes
         const fotos = [
             'criatura/foto1.png',
             'criatura/foto2.png', 
@@ -224,41 +224,42 @@
             setInterval(() => {
                 frameActual = (frameActual + 1) % fotos.length;
                 criatura.style.backgroundImage = `url('${fotos[frameActual]}')`;
-            }, 500);
+            }, 500); // ⏱️ Velocidad animación criatura
         }
 
         // Animación del avión de papel
         function iniciarAnimacionAvion() {
-            // Esperar 1 segundo antes de empezar
+            // ⏱️ Espera inicial (1000 = 1 segundo)
             setTimeout(() => {
-                // Fase 1: Vuelo de ida (fotoavion1.png)
+                // Fase 1: Vuelo de ida
                 avion.style.backgroundImage = "url('criatura/fotoavion1.png')";
                 avion.classList.add('avion-volando-ida');
                 
-                // Fase 2: Después de completar la ida, pausa y luego vuelta
+                // Fase 2: Pausa y vuelta
                 setTimeout(() => {
                     avion.classList.remove('avion-volando-ida');
                     
-                    // Pequeña pausa para simular que da la vuelta
+                    // ⏱️ Pausa entre vuelos (1000 = 1 segundo)
                     setTimeout(() => {
-                        // Cambiar a la segunda imagen del avión para el regreso
+                        // Cambio a segunda imagen
                         avion.style.backgroundImage = "url('criatura/fotoavion2.png')";
                         avion.classList.add('avion-volando-vuelta');
                         
-                        // Fase 3: Estacionar en posición final
+                        // Fase 3: Estacionar con tercera imagen
                         setTimeout(() => {
                             avion.classList.remove('avion-volando-vuelta');
+                            avion.style.backgroundImage = "url('criatura/fotoavion3.png')";
                             avion.classList.add('avion-estacionado');
-                        }, 5000); // Duración del vuelo de vuelta
+                        }, 5000); // ⏱️ Duración vuelo de vuelta
                         
-                    }, 1000); // Pausa entre vuelo de ida y vuelta
+                    }, 1000); // ⏱️ Pausa entre vuelos
                     
-                }, 4000); // Duración del vuelo de ida
+                }, 4000); // ⏱️ Duración vuelo de ida
                 
-            }, 1000); // Espera inicial de 1 segundo
+            }, 1000); // ⏱️ Espera inicial
         }
 
-        // Iniciar cuando la página cargue
+        // Iniciar todo cuando cargue la página
         window.addEventListener('load', function() {
             iniciarAnimacionCriatura();
             iniciarAnimacionAvion();
