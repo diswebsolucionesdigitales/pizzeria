@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizzería La Italiana - Menú</title>
     <style>
-        /* Estilos existentes de la pizzería */
+        /* SOLO tus estilos originales */
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -23,6 +23,8 @@
             color: white;
             text-align: center;
             padding: 40px 0;
+            position: relative;
+            z-index: 1;
         }
         
         header h1 {
@@ -44,48 +46,85 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Estilos para la criatura animada */
-        #criatura-container {
+        /* Criatura original */
+        #criatura {
             position: fixed;
             bottom: 20px;
             right: 20px;
             width: 150px;
             height: 150px;
-            z-index: 1000;
-        }
-        
-        #criatura {
-            width: 100%;
-            height: 100%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            transition: opacity 0.3s ease;
-        }
-        
-        .controls {
-            position: fixed;
-            bottom: 180px;
-            right: 20px;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
         }
-        
-        .controls button {
-            background: #d32f2f;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
+
+        /* Avión */
+        #avion {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            background-image: url('criatura/fotoavion.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 999;
+            opacity: 0;
+            transform: scale(2) translateX(-100%);
+            transition: none;
         }
-        
-        .controls button:hover {
-            background: #b71c1c;
+
+        /* Animación del avión */
+        .avion-entrando {
+            animation: entradaAvion 3s ease-in-out forwards;
+        }
+
+        .avion-saliendo {
+            animation: salidaAvion 2s ease-in-out forwards;
+        }
+
+        .avion-estacionado {
+            top: 20px;
+            left: 20px;
+            opacity: 1;
+            transform: scale(0.8) rotate(-15deg);
+            transition: all 0.5s ease;
+        }
+
+        @keyframes entradaAvion {
+            0% {
+                top: 50%;
+                left: -100px;
+                opacity: 1;
+                transform: scale(2) translateX(0);
+            }
+            50% {
+                top: 25%; /* 3/4 arriba */
+                left: 75%; /* 3/4 derecha */
+                opacity: 1;
+                transform: scale(0.6) translateX(0);
+            }
+            100% {
+                top: 25%;
+                left: 75%;
+                opacity: 1;
+                transform: scale(0.6);
+            }
+        }
+
+        @keyframes salidaAvion {
+            0% {
+                top: 25%;
+                left: 75%;
+                opacity: 1;
+                transform: scale(0.6);
+            }
+            100% {
+                top: 20px;
+                left: 20px;
+                opacity: 1;
+                transform: scale(0.8) rotate(-15deg);
+            }
         }
     </style>
 </head>
@@ -101,7 +140,6 @@
         <section id="home">
             <h2>Nuestras Pizzas</h2>
             <div class="pizza-grid" id="pizza-list">
-                <!-- Las pizzas se cargarán aquí -->
                 <div class="pizza-card">
                     <h3>Margherita</h3>
                     <p>Salsa de tomate, mozzarella fresca y albahaca</p>
@@ -121,84 +159,66 @@
         </section>
     </div>
 
-    <!-- Contenedor de la criatura animada -->
-    <div class="controls">
-        <button onclick="cambiarAnimacion('saludar')">Saludar</button>
-        <button onclick="cambiarAnimacion('leer')">Leer</button>
-        <button onclick="cambiarAnimacion('hojas')">Pasar Hojas</button>
-        <button onclick="cambiarAnimacion('mirar')">Mirar</button>
-    </div>
-    
-    <div id="criatura-container">
-        <div id="criatura"></div>
-    </div>
+    <!-- Criatura original -->
+    <div id="criatura"></div>
+
+    <!-- Avión -->
+    <div id="avion"></div>
 
     <script>
-        // Configuración de animaciones
-        const animaciones = {
-            saludar: ['criatura/foto1.png', 'criatura/foto2.png', 'criatura/foto3.png', 'criatura/foto4.png', 'criatura/foto5.png'],
-            // Agregaremos los otros sets después
-            leer: ['criatura/foto1.png', 'criatura/foto2.png', 'criatura/foto3.png', 'criatura/foto4.png', 'criatura/foto5.png'],
-            hojas: ['criatura/foto1.png', 'criatura/foto2.png', 'criatura/foto3.png', 'criatura/foto4.png', 'criatura/foto5.png'],
-            mirar: ['criatura/foto1.png', 'criatura/foto2.png', 'criatura/foto3.png', 'criatura/foto4.png', 'criatura/foto5.png']
-        };
+        // Configuración simple - solo las 5 fotos en secuencia
+        const fotos = [
+            'criatura/foto1.png',
+            'criatura/foto2.png', 
+            'criatura/foto3.png',
+            'criatura/foto4.png',
+            'criatura/foto5.png'
+        ];
 
-        let animacionActual = 'saludar';
         let frameActual = 0;
-        let intervaloAnimacion;
+        const criatura = document.getElementById('criatura');
+        const avion = document.getElementById('avion');
 
-        // Precargar imágenes
-        function precargarImagenes() {
-            const todasLasImagenes = [];
-            Object.values(animaciones).forEach(frames => {
-                frames.forEach(src => {
-                    if (!todasLasImagenes.includes(src)) {
-                        const img = new Image();
-                        img.src = src;
-                        todasLasImagenes.push(src);
-                    }
-                });
-            });
-        }
-
-        // Iniciar animación
-        function iniciarAnimacion(tipo) {
-            // Detener animación actual
-            if (intervaloAnimacion) {
-                clearInterval(intervaloAnimacion);
-            }
+        // Animación de la criatura original
+        function iniciarAnimacionCriatura() {
+            criatura.style.backgroundImage = `url('${fotos[0]}')`;
             
-            animacionActual = tipo;
-            frameActual = 0;
-            
-            // Mostrar primer frame
-            const criatura = document.getElementById('criatura');
-            criatura.style.backgroundImage = `url('${animaciones[tipo][0]}')`;
-            
-            // Iniciar ciclo de animación
-            intervaloAnimacion = setInterval(() => {
-                frameActual = (frameActual + 1) % animaciones[tipo].length;
-                criatura.style.backgroundImage = `url('${animaciones[tipo][frameActual]}')`;
-            }, 500); // Cambia cada 500ms (0.5 segundos)
-        }
-
-        // Cambiar animación
-        function cambiarAnimacion(tipo) {
-            iniciarAnimacion(tipo);
-        }
-
-        // Inicializar
-        window.addEventListener('load', function() {
-            precargarImagenes();
-            iniciarAnimacion('saludar'); // Animación por defecto
-            
-            // Cambio automático cada 10 segundos (opcional)
             setInterval(() => {
-                const tipos = Object.keys(animaciones);
-                const siguienteTipo = tipos[(tipos.indexOf(animacionActual) + 1) % tipos.length];
-                cambiarAnimacion(siguienteTipo);
-            }, 10000);
+                frameActual = (frameActual + 1) % fotos.length;
+                criatura.style.backgroundImage = `url('${fotos[frameActual]}')`;
+            }, 500);
+        }
+
+        // Animación del avión
+        function iniciarAnimacionAvion() {
+            // Esperar 1 segundo antes de empezar
+            setTimeout(() => {
+                // Fase 1: Entrada del avión
+                avion.classList.add('avion-entrando');
+                
+                // Fase 2: Después de completar la entrada, iniciar salida hacia el header
+                setTimeout(() => {
+                    avion.classList.remove('avion-entrando');
+                    avion.classList.add('avion-saliendo');
+                    
+                    // Fase 3: Estacionar en posición final
+                    setTimeout(() => {
+                        avion.classList.remove('avion-saliendo');
+                        avion.classList.add('avion-estacionado');
+                    }, 2000); // Duración de la animación de salida
+                    
+                }, 3000); // Duración de la animación de entrada
+                
+            }, 1000); // Espera inicial de 1 segundo
+        }
+
+        // Iniciar cuando la página cargue
+        window.addEventListener('load', function() {
+            iniciarAnimacionCriatura();
+            iniciarAnimacionAvion();
         });
     </script>
 </body>
 </html>
+</html>
+
