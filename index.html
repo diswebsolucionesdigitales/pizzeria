@@ -81,8 +81,8 @@
 
         .avion-estacionado {
             /* 📍📍📍 POSICIÓN FINAL - AJUSTAR AQUÍ 📍📍📍 */
-            top: 30px;        /* 📏 Distancia desde arriba - aumentar = bajar */
-            left: 200px;      /* 📏 Distancia desde izquierda - aumentar = derecha */
+            top: 30px;
+            left: 200px;
             opacity: 1;
             transform: scale(0.8) rotate(-15deg);
         }
@@ -224,39 +224,52 @@
             setInterval(() => {
                 frameActual = (frameActual + 1) % fotos.length;
                 criatura.style.backgroundImage = `url('${fotos[frameActual]}')`;
-            }, 500); // ⏱️ Velocidad animación criatura
+            }, 500);
         }
 
         // Animación del avión de papel
         function iniciarAnimacionAvion() {
-            // ⏱️ Espera inicial (1000 = 1 segundo)
+            console.log('⏰ Segundo 0 - Inicio página');
+            
             setTimeout(() => {
-                // Fase 1: Vuelo de ida
+                console.log('🛫 Segundo 1 - Inicia vuelo ida');
                 avion.style.backgroundImage = "url('criatura/fotoavion1.png')";
                 avion.classList.add('avion-volando-ida');
                 
-                // Fase 2: Pausa y vuelta
                 setTimeout(() => {
+                    console.log('⏸️ Segundo 5 - Termina vuelo ida');
                     avion.classList.remove('avion-volando-ida');
                     
-                    // ⏱️ Pausa entre vuelos (1000 = 1 segundo)
                     setTimeout(() => {
-                        // Cambio a segunda imagen
+                        console.log('🛬 Segundo 6 - Inicia vuelo vuelta');
                         avion.style.backgroundImage = "url('criatura/fotoavion2.png')";
                         avion.classList.add('avion-volando-vuelta');
                         
-                        // Fase 3: Estacionar con tercera imagen
                         setTimeout(() => {
+                            console.log('🅿️ Segundo 11 - Termina vuelo vuelta, debe aparecer imagen 3');
                             avion.classList.remove('avion-volando-vuelta');
                             avion.style.backgroundImage = "url('criatura/fotoavion3.png')";
                             avion.classList.add('avion-estacionado');
-                        }, 5000); // ⏱️ Duración vuelo de vuelta
+                            console.log('✅ Imagen 3 aplicada');
+                            
+                        }, 5000);
                         
-                    }, 1000); // ⏱️ Pausa entre vuelos
+                    }, 1000);
                     
-                }, 4000); // ⏱️ Duración vuelo de ida
+                }, 4000);
                 
-            }, 1000); // ⏱️ Espera inicial
+            }, 1000);
+
+            // ⚡ FORZAR IMAGEN 3 EN SEGUNDO 11 - BACKUP
+            setTimeout(() => {
+                console.log('⚡ SEGUNDO 11 - FORZANDO IMAGEN 3');
+                avion.style.backgroundImage = "url('criatura/fotoavion3.png')";
+                avion.classList.add('avion-estacionado');
+                avion.style.opacity = '1';
+                avion.style.top = '30px';
+                avion.style.left = '200px';
+                avion.style.transform = 'scale(0.8) rotate(-15deg)';
+            }, 11000); // 11 segundos
         }
 
         // Iniciar todo cuando cargue la página
@@ -267,3 +280,4 @@
     </script>
 </body>
 </html>
+
